@@ -3,6 +3,7 @@ import { Component, NgZone } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { DetailPage } from '../detail/detail';
+import { AlertController } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -16,7 +17,8 @@ export class HomePage {
   constructor(public navCtrl: NavController, 
               private toastCtrl: ToastController,
               private ble: BLE,
-              private ngZone: NgZone) { 
+              private ngZone: NgZone,
+              private alert: AlertController ) { 
   }
 
   ionViewDidEnter() {
@@ -45,13 +47,14 @@ export class HomePage {
 
   // If location permission is denied, you'll end up here
   scanError(error) {
+    // this.showAlert(error);
     this.setStatus('Error ' + error);
-    let toast = this.toastCtrl.create({
-      message: 'Error scanning for Bluetooth low energy devices',
-      position: 'middle',
-      duration: 5000
-    });
-    toast.present();
+    // let toast = this.toastCtrl.create({
+    //   message: 'Error scanning for Bluetooth low energy devices',
+    //   position: 'middle',
+    //   duration: 5000
+    // });
+    // toast.present();
   }
 
   setStatus(message) {
@@ -63,9 +66,19 @@ export class HomePage {
 
   deviceSelected(device) {
     console.log(JSON.stringify(device) + ' selected');
+    // this.showAlert(JSON.stringify(device) + ' selected');
     this.navCtrl.push(DetailPage, {
       device: device
     });
+  }
+
+  showAlert(message) {
+    let alert = this.alert.create({
+      title: 'something news',
+      subTitle: message,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
 }
