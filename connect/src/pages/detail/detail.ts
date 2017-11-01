@@ -4,6 +4,9 @@ import { ToastController } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
 import { AlertController } from 'ionic-angular';
 
+const UUID = "FFF0";
+const characteristic_UUID_TX="FFF6";
+const characteristic_UUID_RX="FFF7";
 
 @Component({
   selector: 'page-detail',
@@ -38,21 +41,50 @@ export class DetailPage {
       this.setStatus('');
       this.peripheral = peripheral;
     });
-    console.log(peripheral.characteristics);
+    console.log("peripheral.characteristics "+peripheral.characteristics);
     console.log("deviceId "+peripheral.id);
-    console.log("serviceUUID ");
-    for (let  i of peripheral.characteristics) {
-      this.ble.read(peripheral.id, i.service, i.characteristic).then(
-        buffer => {
-          var data = new Uint8Array(buffer);
-          this.ngZone.run(() => {
+    let send_data= new Uint8Array([0x43,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x43]);
+    
+    this.ble.startNotification(peripheral.id, UUID, characteristic_UUID_RX).subscribe(
+      buffer => {
+        var data = new Uint8Array(buffer);
+        console.log('Received Notification: Power Switch = ' + data);
+      }
+    );
+
+
+    this.ble.write(peripheral.id,'fff0','fff6',send_data.buffer).then(
+      result =>{
+        console.log(result+"success to write");
+      },
+      e => console.log("error "+e)
+    );
+
+
+    this.ble.read(peripheral.id,'fff0','fff6').then(
+       buffer => {
+            var data = new Uint8Array(buffer);
+            alert(buffer);
+            this.ngZone.run(() => {
+              for (var j = 0; j < data.length; j++) {
+                console.log(Math.floor(data[j]/16),data[j]%16);
+              }
             console.log(data);
           });
-        }
+        },
+        e => console.log("error "+e)
       );
-      console.log(i.characteristic);
-    }
-
+    // this.ble.read(peripheral.id,UUID,characteristic_UUID_RX).then(
+    //   buffer => {
+    //     var data = new Uint8Array(buffer);
+    //     this.ngZone.run(() => {
+    //       for (var j = 0; j < data.length; j++) {
+    //         console.log(Math.floor(data[j]/16),data[j]%16);
+    //       }
+    //       console.log(data);
+    //     });
+    //   }
+    // );
   }
 
   onDeviceDisconnected(peripheral) {

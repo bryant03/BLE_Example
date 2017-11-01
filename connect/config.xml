@@ -3,7 +3,7 @@
     <name>Connect</name>
     <description>Use Ionic to connect to BLE peripherals</description>
     <author href="http://github.com/don">Don Coleman</author>
-    <content original-src="index.html" src="http://166.111.69.24:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-intent href="http://*/*" />
@@ -80,6 +80,8 @@
     <allow-navigation href="http://166.111.69.55:8100" />
     <allow-navigation href="http://166.111.69.49:8100" />
     <allow-navigation href="http://166.111.69.24:8100" />
+    <allow-navigation href="http://166.111.69.11:8100" />
+    <allow-navigation href="http://166.111.69.63:8100" />
     <engine name="android" spec="^6.2.3" />
     <plugin name="cordova-plugin-ble-central" spec="^1.1.4">
         <variable name="BLUETOOTH_USAGE_DESCRIPTION" value=" " />
